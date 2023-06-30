@@ -1,10 +1,10 @@
 # Bellabeat-Capstone
 
-Introduction
+##Introduction
 In the Bellabeat Case Study 2 for the Capstone Project, I assume the role of a junior data analyst on the Bellabeat marketing analyst team. I'm working with Bellabeat, a well-known producer of health-oriented products for women.
 I used the six-step data analysis approach outlined in the Google Data Analytics Professional Certificate course: Ask, Prepare, Process, Analyze, Share, and Act in order to address the pertinent questions. These phases led me through the entire project and provided a structured method for answering the business questions.
 
-About Bellabeat
+##About Bellabeat
 Bellabeat is a high-tech firm founded by Urška Sršen and Sando Mur. It focuses in developing women's smart products with a health focus. Bellabeat empowers women by offering information about numerous areas of their health, such as exercise, sleep, stress, and reproductive health, using exceptionally developed technology. Bellabeat has swiftly expanded since its founding in 2013 to become a well-known tech-driven wellness brand.
 
 In addition to their own online store on their website, Bellabeat items are also sold through an increasing number of other online merchants.
