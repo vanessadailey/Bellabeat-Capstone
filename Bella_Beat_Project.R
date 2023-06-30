@@ -1,3 +1,4 @@
+#First install packages to be used
 install.packages("tidyverse")
 install.packages("ggplot2")
 install.packages("RColorBrewer")
@@ -16,6 +17,8 @@ library(dplyr)
 library(tidyr)
 library(scales)
 library(viridis)
+
+#Load files
 
 Sleep_Day <- read.csv("/Users/vanessa/Desktop/Daily_Sleep_Merged.csv")
 Daily_Activity <- read.csv("/Users/vanessa/Desktop/Daily_Activity_Merged.csv")
@@ -269,7 +272,7 @@ Mins_Asleep_vs_Calories <- Daily_Activity %>%
 
 print(Mins_Asleep_vs_Calories)
 
-# Calculate the sum of Sedentary_Minutes and Total_Minutes_Asleep
+# Calculate the sum of Calories and Total_Minutes_Asleep
 Sum_Calories <- aggregate(Calories ~ Id, Daily_Activity, sum)
 Sum_Asleep <- aggregate(Total_Minutes_Asleep ~ Id, Sleep_Day, sum)
 
