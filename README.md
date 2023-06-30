@@ -58,13 +58,13 @@ Bellabeat marketing analytics team: A team of data analysts responsible for gath
 
 
 **Renamed the csv files to:**
- → Daily_Activity_Merged
- → Hourly_Intensity_Merged
- → Hourly_Steps_Merged
- → Daily_Sleep_Merged
- → Hourly_Calories_Merged
- → Heart_Rate_Merged
- → Weight_Log_Merged
+ - Daily_Activity_Merged
+ - Hourly_Intensity_Merged
+ - Hourly_Steps_Merged
+ - Daily_Sleep_Merged
+ - Hourly_Calories_Merged
+ - Heart_Rate_Merged
+ - Weight_Log_Merged
  
 **Using Excel**
 - To determine the number of unique users in the dataset, data was sorted and filtered by Id. Then counted how many digits were in each data number, which came out to be 10, to make sure they were all consistent.
