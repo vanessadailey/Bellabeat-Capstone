@@ -234,6 +234,7 @@ ORDER BY
   Num_Users DESC;
 ```
 ![Screenshot 2023-06-29 at 6 46 01 PM](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/3f8da7bb-2a66-4d89-898e-4e37cd20f942)
+
 Not a significant difference in calories burned with higher amount steps taken to lower amount of steps taken.
 
 The CDC recommends that people get around 10,000 steps per day. I wanted to see if any of the participants met these requirements and how many.
@@ -257,12 +258,12 @@ GROUP BY Id;
 Now time to visualize **Participant Count vs. Meeting CDC Recommendation** in R:
 
 ![Screenshot 2023-06-29 at 6 46 48 PM](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/b9d32a3d-7308-4b2d-bed0-abd33e371178)
+
 Most participants, at 26 count, do not meet the recommended daily step count while 7 participants do.
 
 Next, I wanted to breakdown the activity levels to see the percentages from **Sedentary Minutes, Light Active Minutes, Fairly Active Minutes, and Very Active Minutes**.
 
 ![Screenshot 2023-06-29 at 6 47 30 PM](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/10298bd2-7405-439b-a3bd-9244b3252532)
-
 
 Sedentary takes the cake in this pie chart following lightly active minutes, very active minutes and lastly, fairly active minutes. This indicates that a significant amount of time is spent in sedentary activities, such as sitting or lying down, which can have negative health implications.
 
