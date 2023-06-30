@@ -1,0 +1,558 @@
+# Selecting the distinct count of Ids for Daily_Activity
+SELECT COUNT (DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Daily_Activity`;
+# 33 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Heartrate_Seconds
+SELECT COUNT (DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Heartrate_Seconds`;
+# 7 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Hourly_Calories
+SELECT COUNT(DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Hourly_Calories`;
+# 33 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Hourly_Intenstity
+SELECT COUNT(DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Hourly_Intensity`;
+# 33 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Hourly_Steps
+SELECT COUNT(DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Hourly_Steps`;
+# 33 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Sleep_Day
+SELECT COUNT(DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Sleep_Day`;
+# 24 distinct Ids are shown
+
+# Selecting the distinct count of Ids for Weight_Log
+SELECT COUNT(DISTINCT Id) AS Total_Ids
+FROM `bellabeat.Weight_Log`;
+# 8 distinct Ids are shown
+
+#Start and end date for Daily_Acivity
+SELECT 
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Daily_Activity`;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end dates for Id users in Daily_Activity
+SELECT 
+  Id,
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end date for Hourly_Calories
+SELECT 
+  FORMAT_DATE('%Y-%m-%d', MIN(DATE(Activity_Hour))) AS Start_Date,
+  FORMAT_DATE('%Y-%m-%d', MAX(DATE(Activity_Hour))) AS End_Date
+FROM `bellabeat.Hourly_Calories`;
+#Shows 16-04-12 to 16-05-12
+
+#Start and end dates for Id users in Hourly_Calories
+SELECT 
+  Id,
+  FORMAT_DATE('%Y-%m-%d', MIN(DATE(Activity_Hour))) AS Start_Date,
+  FORMAT_DATE('%Y-%m-%d', MAX(DATE(Activity_Hour))) AS End_Date
+FROM `bellabeat.Hourly_Calories`
+GROUP BY Id;
+#Shows 16-04-12 to 16-05-12
+
+#Start and end date for Hourly_Intensity
+SELECT 
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Hourly_Intensity`;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end dates for Id users in Hourly_Intensity
+SELECT 
+  Id,
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Hourly_Intensity`
+GROUP BY Id;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end date for Hourly_Steps
+SELECT 
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Hourly_Steps`;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end dates for Id users in Hourly_Steps
+SELECT 
+  Id,
+  MIN(Activity_Date) AS Start_Date,
+  MAX(Activity_Date) AS End_Date
+FROM `bellabeat.Hourly_Steps`
+GROUP BY Id;
+#Shows 2016-04-12 to 2016-05-12
+
+#Start and end date for Sleep_Day
+SELECT 
+  FORMAT_DATE('%Y-%m-%d', MIN(DATE(Sleep_Day))) AS Start_Date,
+  FORMAT_DATE('%Y-%m-%d', MAX(DATE(Sleep_Day))) AS End_Date
+FROM `bellabeat.Sleep_Day`;
+#Shows 16-04-12 to 16-05-12
+
+#Start and end dates for Id users in Sleep_Day
+SELECT 
+  Id,
+  FORMAT_DATE('%Y-%m-%d', MIN(DATE(Sleep_Day))) AS Start_Date,
+  FORMAT_DATE('%Y-%m-%d', MAX(DATE(Sleep_Day))) AS End_Date
+FROM `bellabeat.Sleep_Day`
+GROUP BY Id;
+#Shows 2016-04-12 to 2016-05-12
+
+#Calculating how many times a user used the FitBit tracker
+SELECT Id,
+  COUNT(Id) AS Total_FitBit_Usage
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id;
+
+#Want to show a breakdown of the number of users for each login count
+SELECT 
+  Login_Count,
+  COUNT(*) AS User_Count
+FROM (
+  SELECT 
+    Id,
+    COUNT(*) AS Login_Count
+  FROM `bellabeat.Daily_Activity`
+  GROUP BY Id
+) AS Login_Counts
+GROUP BY Login_Count 
+ORDER BY Login_Count DESC;
+#Highest is 31 times logged in by 21 users and lowest being 4 times logged in by 1 user
+
+#Organzing data into categories: High_Usage, Moderate_Usage, Low_Usage
+#Then counting the Id in each category and calculcating the percentages
+SELECT
+  High_Usage_Count,
+  Moderate_Usage_Count,
+  Low_Usage_Count,
+  ROUND(High_Usage_Count * 100.0 / Total_Count,2) AS High_Usage_Percentage,
+  ROUND(Moderate_Usage_Count * 100.0 / Total_Count,2) AS Moderate_Usage_Percentage,
+  ROUND(Low_Usage_Count * 100.0 / Total_Count,2) AS Low_Usage_Percentage
+FROM (
+  SELECT
+    COUNT(CASE WHEN Usage_Category = 'High Usage' THEN Id END) AS High_Usage_Count,
+    COUNT(CASE WHEN Usage_Category = 'Moderate Usage' THEN Id END) AS Moderate_Usage_Count,
+    COUNT(CASE WHEN Usage_Category = 'Low Usage' THEN Id END) AS Low_Usage_Count,
+    (SELECT COUNT(*) FROM `bellabeat.Daily_Activity`) AS Total_Count
+  FROM (
+    SELECT Id,
+      CASE
+        WHEN COUNT(Id) >= 25 THEN 'High Usage'
+        WHEN COUNT(Id) BETWEEN 15 AND 24 THEN 'Moderate Usage'
+        WHEN COUNT(Id) <= 14 THEN 'Low Usage'
+        ELSE 'Invalid'
+      END AS Usage_Category
+    FROM `bellabeat.Daily_Activity`
+    GROUP BY Id
+  ) AS Usage_Data
+) AS Total;
+
+#Get total average steps per user, CDC recommends 10,000 steps a day
+SELECT 
+  DISTINCT Id,
+  ROUND(AVG(Total_Steps),2) AS Avg_Total_Steps
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id;
+
+#Parse the data to see how many of the participants meet the recommended quota
+SELECT
+  DISTINCT Id,
+  ROUND(AVG(Total_Steps),2) AS Avg_Total_Steps,
+  CASE 
+    WHEN AVG(Total_Steps) >= 10000 THEN 'Meets CDC Recommendation'
+   WHEN AVG(Total_Steps) < 10000 THEN 'Does Not Meet CDC Recommendation'
+    ELSE 'Invalid'
+  END CDC_Recommended_Steps
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id;
+#Shows a list of each participant and if they meet the goal or not
+
+#Calculate percentage and the number of participants that meet the recommended CDC steps or not
+#Used a common table expression: Step_Summary to make it easier to understand
+WITH StepSummary AS (
+  SELECT
+    DISTINCT Id,
+    ROUND(AVG(Total_Steps), 2) AS Avg_Total_Steps,
+    CASE 
+      WHEN AVG(Total_Steps) >= 10000 THEN 'Meets CDC Recommendation'
+      WHEN AVG(Total_Steps) < 10000 THEN 'Does Not Meet CDC Recommendation'
+      ELSE 'Invalid'
+    END AS CDC_Recommended_Steps
+  FROM `bellabeat.Daily_Activity`
+  GROUP BY Id
+)
+SELECT
+  CDC_Recommended_Steps,
+  COUNT(DISTINCT Id) AS Participant_Count,
+  ROUND((COUNT(DISTINCT Id) / (SELECT COUNT(DISTINCT Id) FROM StepSummary)) * 100, 2) AS Percentage
+FROM StepSummary
+GROUP BY CDC_Recommended_Steps;
+#Shows 26 at 78.79% do not meet the recommended steps
+#And 7 at 21.21% do meet the CDC recommendation
+
+#See if participants meet the CDC recommended 150 minutes of activity 
+SELECT
+  Id,
+  ROUND(AVG(Very_Active_Minutes + Fairly_Active_Minutes + Lightly_Active_Minutes), 2) AS Total_Avg_Active_Minutes,
+  CASE
+    WHEN AVG(Very_Active_Minutes + Fairly_Active_Minutes + Lightly_Active_Minutes) >= 150 THEN 'Meets CDC Recommendation'
+    WHEN AVG(Very_Active_Minutes + Fairly_Active_Minutes + Lightly_Active_Minutes) < 150 THEN 'Does Not Meet CDC Recommendation'
+  END AS CDC_Recommendations
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id;
+#6 don't meet the requirement
+
+# See if any records have zero steps and how many
+SELECT 
+  Id, 
+  COUNT(*) AS Zero_Steps
+FROM `bellabeat.Daily_Activity`
+WHERE Total_Steps = 0
+GROUP BY Id
+ORDER BY Zero_Steps DESC;
+
+#Total amount of records with zero steps
+SELECT SUM(Zero_Steps) AS Total_Zero_Steps_Days
+FROM (
+	SELECT 
+    COUNT(*) AS Zero_Steps
+	FROM `bellabeat.Daily_Activity`
+	WHERE Total_Steps = 0
+	) AS Summary_Zero_Steps;
+  #77 of these zero step days in total
+
+#Determining the sedentary minutes and hours
+SELECT 
+  DISTINCT Id,
+  SUM(Sedentary_Minutes) AS Total_Sedentary_Mins,
+  ROUND(SUM(Sedentary_Minutes/60),2) AS Total_Sedentary_Hours
+FROM `bellabeat.Daily_Activity`
+GROUP BY Id
+ORDER BY Total_Sedentary_Mins DESC;
+
+#Calculating the total of sedentary minutes and hours in Daily-Acitivity
+SELECT 
+  SUM(Sedentary_Minutes) AS Total_Sedentary_Mins,
+  ROUND(SUM(Sedentary_Minutes/60),2) AS Total_Sedentary_Hours
+FROM `bellabeat.Daily_Activity`;
+
+
+#Start looking into days of week when people track their activity most
+SELECT
+    Day_of_Week,
+    SUM(Total_Steps) AS Total_Steps_Taken
+FROM
+    (SELECT
+        Activity_Date,
+        FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+        Total_Steps
+    FROM
+        `bellabeat.Daily_Activity`
+    ) AS Activity_Day_Type
+GROUP BY
+    Day_of_Week;
+
+#Break it down for each day of the week: total calories, steps taken and number of users logged in for each day of the week
+SELECT
+  FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+  SUM(Calories) AS Total_Calories,
+  SUM(Total_Steps) AS Steps_Taken,
+  COUNT(Id) AS Num_Users
+FROM
+  `bellabeat.Daily_Activity`
+GROUP BY
+  Day_of_Week
+ORDER BY
+  Num_Users DESC;
+#Tuesday seems to be the busiest day of the week with Monday being the lowest
+
+#Checking for any outliers using the z-score
+WITH Activity_Stats AS (
+  SELECT
+    FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+    COUNT(*) AS Activity_Count
+  FROM
+    `bellabeat.Daily_Activity`
+  GROUP BY
+    Day_of_Week
+),
+Stats AS (
+  SELECT
+    AVG(Activity_Count) AS Avg_Activity_Count,
+    STDDEV(Activity_Count) AS StdDev_Activity_Count
+  FROM
+    Activity_Stats
+)
+SELECT
+  a.Day_of_Week,
+  a.Activity_Count,
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count AS Z_Score
+FROM
+  Activity_Stats AS a
+CROSS JOIN
+  Stats AS s
+ORDER BY
+  a.Activity_Count DESC;
+
+#Checking for extreme outliers 2.576/-2.576 STD above/below mean
+WITH ActivityStats AS (
+  SELECT
+    FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+    COUNT(*) AS Activity_Count
+  FROM
+    `bellabeat.Daily_Activity`
+  GROUP BY
+    Day_of_Week
+),
+Stats AS (
+  SELECT
+    AVG(Activity_Count) AS Avg_Activity_Count,
+    STDDEV(Activity_Count) AS StdDev_Activity_Count
+  FROM
+    ActivityStats
+)
+SELECT
+  a.Day_of_Week,
+  a.Activity_Count,
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count AS Z_Score
+FROM
+  ActivityStats AS a
+CROSS JOIN
+  Stats AS s
+WHERE
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count > 2.576
+  OR (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count < -2.576
+ORDER BY
+  a.Activity_Count DESC;
+#No results, so there are no extreme outliers
+
+#Checking for outliers 1.96/-1.96 STD above/below mean
+WITH ActivityStats AS (
+  SELECT
+    FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+    COUNT(*) AS Activity_Count
+  FROM
+    `bellabeat.Daily_Activity`
+  GROUP BY
+    Day_of_Week
+),
+Stats AS (
+  SELECT
+    AVG(Activity_Count) AS Avg_Activity_Count,
+    STDDEV(Activity_Count) AS StdDev_Activity_Count
+  FROM
+    ActivityStats
+)
+SELECT
+  a.Day_of_Week,
+  a.Activity_Count,
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count AS Z_Score
+FROM
+  ActivityStats AS a
+CROSS JOIN
+  Stats AS s
+WHERE
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count > 1.96
+  OR (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count < -1.96
+ORDER BY
+  a.Activity_Count DESC;
+#No results
+
+#Checking for outliers 1.645/-1.645 STD above/below mean
+WITH Activity_Stats AS (
+  SELECT
+    FORMAT_DATE('%A', Activity_Date) AS Day_of_Week,
+    COUNT(*) AS Activity_Count
+  FROM
+    `bellabeat.Daily_Activity`
+  GROUP BY
+    Day_of_Week
+),
+Stats AS (
+  SELECT
+    AVG(Activity_Count) AS Avg_Activity_Count,
+    STDDEV(Activity_Count) AS StdDev_Activity_Count
+  FROM
+    Activity_Stats
+)
+SELECT
+  a.Day_of_Week,
+  a.Activity_Count,
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count AS Z_Score
+FROM
+  Activity_Stats AS a
+CROSS JOIN
+  Stats AS s
+WHERE
+  (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count > 1.645
+  OR (a.Activity_Count - s.Avg_Activity_Count) / s.StdDev_Activity_Count < -1.645
+ORDER BY
+  a.Activity_Count DESC;
+#No results so no outliers in total
+
+#Check the average activity (steps & distance) and calories on weekdays vs weekends
+SELECT
+    Day_Type,
+    ROUND(AVG(Total_Steps),2) AS Avg_Steps,
+    ROUND(AVG(Total_Distance),2) AS Avg_Distance,
+    ROUND(AVG(Calories),2) AS Avg_Calories
+FROM
+    (SELECT *,
+            CASE
+                WHEN Day_of_Week IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday') THEN 'Weekday'
+                ELSE 'Weekend'
+            END AS Day_Type
+    FROM
+        (SELECT *,
+              FORMAT_TIMESTAMP('%A',Activity_Date) AS Day_of_Week
+        FROM
+            `bellabeat.Daily_Activity`) AS Test1) AS Test2
+GROUP BY Day_Type;
+#Slightly more activity is done on the weekdays
+
+
+#Determine average calories burned 
+SELECT 
+  Id,
+  SUM(Calories) AS Total_Calories
+FROM `bellabeat.Hourly_Calories`
+GROUP BY Id
+ORDER BY Total_Calories DESC;
+
+#Is there a correlation between calories burned and intensity?
+SELECT
+  CORR(c.Calories, i.Total_Intensity) AS Correlation
+FROM
+  `bellabeat.Hourly_Calories` AS c
+JOIN
+  `bellabeat.Hourly_Intensity` AS i
+ON
+  c.Id = i.Id;
+#Result of 0.037632520584, which means a weak or negligible correlation between intensity and calories
+
+#Want to see the intensity hours among participants
+SELECT 
+  Id,
+  ROUND(SUM(Total_Intensity/60),2) AS Intensity_Hours
+FROM
+  `bellabeat.Hourly_Intensity`
+GROUP BY Id
+ORDER BY Intensity_Hours DESC;
+
+#Is there a correlation between calories burned and steps?
+SELECT
+  CORR(c.Calories, s.Step_Total) AS Correlation
+FROM
+  `bellabeat.Hourly_Calories` AS c
+JOIN
+  `bellabeat.Hourly_Steps` AS s
+ON
+  c.Id = s.Id;
+# Result of 0.0370333661115, which is weak
+
+#Want to see the hourly steps 
+SELECT 
+  Activity_Time,
+  SUM(Step_Total) AS Total_Steps
+FROM `bellabeat.Hourly_Steps`
+GROUP BY Activity_Time
+ORDER BY Activity_Time DESC;
+
+
+# Finding unique participants in the Daily_Activity who do not have records in the Sleep_Log table
+SELECT
+  DISTINCT d.Id
+FROM
+  `bellabeat.Daily_Activity` AS d
+LEFT JOIN
+  `bellabeat.Sleep_Day` AS s
+ON
+  d.Id = s.Id
+WHERE
+  s.Id IS NULL;
+#There are 9, which is to be expected after counting the distinct Ids earlier
+
+# Looking at calories and total minutes asleep
+SELECT 
+  d.Id, 
+  FORMAT_DATE('%y-%m-%d', d.Activity_Date) AS Activity_Date,
+  FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day) AS Sleep_Date,
+  d.Calories, 
+  s.Total_Minutes_Asleep
+FROM `bellabeat.Daily_Activity` AS d 
+INNER JOIN `bellabeat.Sleep_Day` AS s 
+  ON d.Id = s.Id AND FORMAT_DATE('%y-%m-%d', d.Activity_Date) = FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day)
+WHERE s.Sleep_Day IS NOT NULL AND s.Total_Minutes_Asleep IS NOT NULL
+GROUP BY 
+  d.Id, 
+  d.Activity_Date,
+  s.Sleep_Day,
+  d.Calories, 
+  s.Total_Minutes_Asleep
+ORDER BY 
+  d.Id,
+  d.Activity_Date DESC;
+
+#Is sleep duration impacted by activity level? 
+SELECT 
+  d.Id, 
+  FORMAT_DATE('%y-%m-%d', d.Activity_Date) AS Activity_Date,
+  FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day) AS Sleep_Date,
+  d.Calories, 
+  s.Total_Minutes_Asleep,
+  d.Very_Active_Minutes,
+  d.Fairly_Active_Minutes,
+  d.Lightly_Active_Minutes,
+  d.Sedentary_Minutes
+FROM `bellabeat.Daily_Activity` AS d 
+INNER JOIN `bellabeat.Sleep_Day` AS s 
+  ON d.Id = s.Id AND FORMAT_DATE('%y-%m-%d', d.Activity_Date) = FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day)
+WHERE s.Sleep_Day IS NOT NULL AND s.Total_Minutes_Asleep IS NOT NULL
+ORDER BY d.Id;
+
+#Sum total of each activity level hours and the total hours of sleep time of the 24/33 participants
+SELECT 
+  d.Id, 
+  ROUND(SUM(s.Total_Minutes_Asleep)/60, 2) AS Total_Hours_Asleep,
+  SUM(d.Calories) AS Total_Calories, 
+  ROUND(SUM(d.Very_Active_Minutes)/60, 2) AS Total_Very_Active_Hours,
+  ROUND(SUM(d.Fairly_Active_Minutes)/60, 2) AS Total_Fairly_Active_Hours,
+  ROUND(SUM(d.Lightly_Active_Minutes)/60, 2) AS Total_Lightly_Active_Hours,
+  ROUND(SUM(d.Sedentary_Minutes)/60, 2) AS Total_Sedentary_Hours
+FROM `bellabeat.Daily_Activity` AS d 
+INNER JOIN `bellabeat.Sleep_Day` AS s 
+  ON d.Id = s.Id AND FORMAT_DATE('%y-%m-%d', d.Activity_Date) = FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day)
+WHERE s.Sleep_Day IS NOT NULL AND s.Total_Minutes_Asleep IS NOT NULL
+GROUP BY 
+  d.Id 
+ORDER BY 
+  Total_Hours_Asleep DESC,
+  d.Id;
+#So far not seeing a big correlation to activity levels and hours asleep -- Need visuals.
+
+
+#Number of days where participants got the CDC recommended 7-9 hours sleep/night
+SELECT 
+  FORMAT_DATE('%A', d.Activity_Date) AS Day_of_Week,
+  COUNT(*) AS Num_Days
+FROM `bellabeat.Daily_Activity` AS d 
+INNER JOIN `bellabeat.Sleep_Day` AS s 
+  ON d.Id = s.Id AND FORMAT_DATE('%y-%m-%d', d.Activity_Date) = FORMAT_TIMESTAMP('%y-%m-%d', s.Sleep_Day)
+WHERE s.Total_Minutes_Asleep >= 420 AND s.Total_Minutes_Asleep <= 540
+GROUP BY Day_of_Week
+ORDER BY Num_Days DESC;
