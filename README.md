@@ -4,7 +4,8 @@ Author: Vanessa Dailey
 
 Date: June 29, 2023
 
-![bruce-mars-ZXq7xoo98b0-unsplash](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/8960bf39-c64d-45d1-be54-787721aa6151)
+![1](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/79da5c8a-c2ed-49b2-8c46-03155063aeaf)
+
 
 ## Introduction
 In the Bellabeat Case Study 2 for the Capstone Project, I assume the role of a junior data analyst on the Bellabeat marketing analyst team. I'm working with Bellabeat, a well-known producer of health-oriented products for women.
@@ -53,7 +54,8 @@ Bellabeat marketing analytics team: A team of data analysts responsible for gath
 ## 3 → Process
 ### Cleaning the data
 
-![scott-graham-5fNmWej4tAA-unsplash](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/4490d4bc-e11f-4b85-b410-00aea3bd9644)
+![2](https://github.com/vanessadailey/Bellabeat-Capstone/assets/125935435/ad9498c1-a399-4792-a1c4-ec0d44f5e90a)
+
 
 **Renamed the csv files to:**
  → Daily_Activity_Merged
